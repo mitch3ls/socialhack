@@ -34,7 +34,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Working" screenOptions={{
+        <Stack.Navigator initialRouteName="Results" screenOptions={{
           headerShown: false
         }}>
           <Stack.Screen name="Swipe" component={SwipeScreen} />

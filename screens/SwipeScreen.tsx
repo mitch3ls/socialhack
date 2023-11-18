@@ -302,6 +302,7 @@ const styles = StyleSheet.create({
         height: normalizeHeight(660)
     },
     title: {
+        color: '#16352F',
         fontSize: normalizeHeight(28),
         flex: 1,
         fontFamily: 'Montserrat-Black'
