@@ -114,28 +114,24 @@ export default function SwipeScreen({ navigation }) {
                     OverlayLabelStronglyDisagree={OverlayStronglyDisagree}
                     cardStyle={styles.card}
                     onSwipedStronglyAgree={() => {
-                        console.log('strongly agree')
                         dispatch(addAnswer({
                             category: item.category,
                             answer: AnswerStatement.StronglyAgree
                         }))
                     }}
                     onSwipedAgree={() => {
-                        console.log('agree')
                         dispatch(addAnswer({
                             category: item.category,
                             answer: AnswerStatement.Agree
                         }))
                     }}
                     onSwipedDisagree={() => {
-                        console.log('disagree')
                         dispatch(addAnswer({
                             category: item.category,
                             answer: AnswerStatement.Disagree
                         }))
                     }}
                     onSwipedStronglyDisagree={() => {
-                        console.log('strongly disagree')
                         dispatch(addAnswer({
                             category: item.category,
                             answer: AnswerStatement.StronglyDisagree

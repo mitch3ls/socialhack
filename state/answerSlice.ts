@@ -20,7 +20,6 @@ export const answerSlice = createSlice({
     reducers: {
         // Use the PayloadAction type to declare the contents of `action.payload`
         addAnswer: (state, action: PayloadAction<AnswerData>) => {
-            console.log('addAnswer', action.payload)
             state.answers.push(action.payload)
         },
     },
