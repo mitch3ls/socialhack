@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useMemo, useRef, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import TinderCard, { CardItemHandle } from '../components/TinderCard';
 
@@ -150,7 +150,7 @@ export default function SwipeScreen({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.optionContainer}>
                 <View style={styles.optionStronglyAgree} ref={stronglyAgreeRef} onLayout={() => {
                     stronglyAgreeRef.current.measure((_fx, _fy, _width, _height, px, py) => {
@@ -201,7 +201,7 @@ export default function SwipeScreen({ navigation }) {
             </GestureHandlerRootView>
 
             <StatusBar style="auto" />
-        </View>
+        </SafeAreaView>
     );
 }
 

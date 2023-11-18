@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView } from 'react-native';
 import { useAnswers } from '../state/hooks';
 
 export default function ResultsScreen() {
@@ -7,12 +7,12 @@ export default function ResultsScreen() {
     const answers = useAnswers();
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {answers.map((item, index) => <Text key={index}>
                 category: {item.category}: answer: {item.answer}
             </Text>)}
             <StatusBar style="auto" />
-        </View>
+        </SafeAreaView>
     );
 }
 

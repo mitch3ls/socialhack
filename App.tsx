@@ -12,7 +12,9 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Swipe">
+        <Stack.Navigator initialRouteName="Swipe" screenOptions={{
+          headerShown: false
+        }}>
           <Stack.Screen name="Swipe" component={SwipeScreen} />
           <Stack.Screen name="Results" component={ResultsScreen} />
         </Stack.Navigator>
