@@ -1,32 +1,49 @@
 import React, { PropsWithChildren } from 'react';
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
+const { width: windowWidth } = Dimensions.get('screen');
+
+
 type Props = PropsWithChildren<{
-  inputRange?: number[];
-  outputRange?: number[];
+  overShootFrom?: number;
+  angleFromValue: Animated.SharedValue<number>;
+  angleToValue: Animated.SharedValue<number>;
+  overShootTo?: number;
   Component: () => JSX.Element;
-  opacityValue: Animated.SharedValue<number>;
+  distanceValue: Animated.SharedValue<number>;
+  angleValue: Animated.SharedValue<number>;
 }>;
 
 const OverlayLabel = ({
-  inputRange,
-  outputRange,
+  overShootFrom = 0.5,
+  angleFromValue,
+  angleToValue,
+  overShootTo = 0.5,
   Component,
-  opacityValue
+  distanceValue,
+  angleValue
 }: Props) => {
+
   const animatedStyle = useAnimatedStyle(() => {
+    const adjustedDistance = interpolate(
+      distanceValue.value,
+      [0, windowWidth / 4],
+      [0, 1],
+      Extrapolation.CLAMP
+    )
+    const adjustedAngle = interpolate(
+      angleValue.value,
+      [angleFromValue.value - overShootFrom, angleFromValue.value + 0.05, angleToValue.value - 0.05, angleToValue.value + overShootTo],
+      [0, 1, 1, 0],
+      Extrapolation.CLAMP
+    )
     return {
-      opacity: interpolate(
-        opacityValue.value,
-        inputRange ?? [],
-        outputRange ?? [],
-        Extrapolation.CLAMP
-      ),
+      opacity: adjustedDistance * adjustedAngle,
       zIndex: 2,
     };
   });

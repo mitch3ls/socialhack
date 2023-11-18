@@ -57,6 +57,7 @@ const snapPoint = (
 ): number => {
   'worklet';
   const point = value + 0.2 * velocity;
+  console.log('point:', point)
   const deltas = points.map((p) => Math.abs(point - p));
   const minDelta = Math.min.apply(null, deltas);
   return Number(points.filter((p) => Math.abs(point - p) === minDelta)[0]);

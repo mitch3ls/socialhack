@@ -1,9 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { Alert, Image, StyleSheet, Text, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import TinderCard from './components/TinderCard';
-import { useAnimatedReaction } from 'react-native-reanimated';
+import TinderCard, { CardItemHandle } from './components/TinderCard';
+
+import normalize from './util/normalizeFontSize';
 
 const data = [
   {
@@ -11,61 +12,153 @@ const data = [
   },
   {
     question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }
+  }, {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
+  {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  }, {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
+  {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  }, {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
+  {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  }, {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
+  {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  }, {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
+  {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  }, {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
+  {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  }, {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
+  {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  }, {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
+  {
+    question: '¿Ha dormido bien? ¿Ha dormido bien?'
+  },
 ];
 
+const OverlayStronglyAgree = () => {
+  return (
+    <View
+      style={[
+        styles.overlayLabelContainer,
+        {
+          backgroundColor: '#306F63',
+        },
+      ]}
+    >
+      <Text style={styles.overlayLabelText}>Strongly Agree</Text>
+    </View>
+  );
+};
+
+const OverlayAgree = () => {
+  return (
+    <View
+      style={[
+        styles.overlayLabelContainer,
+        {
+          backgroundColor: '#ADD4C2',
+        },
+      ]}
+    >
+      <Text style={styles.overlayLabelText}>Agree</Text>
+    </View>
+  );
+};
+
+const OverlayDisagree = () => {
+  return (
+    <View
+      style={[
+        styles.overlayLabelContainer,
+        {
+          backgroundColor: '#FFB4D2',
+        },
+      ]}
+    >
+      <Text style={styles.overlayLabelText}>Disagree</Text>
+    </View>
+  );
+};
+
+const OverlayStronglyDisagree = () => {
+  return (
+    <View
+      style={[
+        styles.overlayLabelContainer,
+        {
+          backgroundColor: '#FE4102',
+        },
+      ]}
+    >
+      <Text style={styles.overlayLabelText}>Stronly Disagree</Text>
+    </View>
+  );
+};
+
+
 export default function App() {
-  const OverlayRight = () => {
-    return (
-      <View
-        style={[
-          styles.overlayLabelContainer,
-          {
-            backgroundColor: 'green',
-          },
-        ]}
-      >
-        <Text style={styles.overlayLabelText}>Like</Text>
-      </View>
-    );
-  };
-  const OverlayLeft = () => {
-    return (
-      <View
-        style={[
-          styles.overlayLabelContainer,
-          {
-            backgroundColor: 'red',
-          },
-        ]}
-      >
-        <Text style={styles.overlayLabelText}>Nope</Text>
-      </View>
-    );
-  };
-  const OverlayTop = () => {
-    return (
-      <View
-        style={[
-          styles.overlayLabelContainer,
-          {
-            backgroundColor: 'blue',
-          },
-        ]}
-      >
-        <Text style={styles.overlayLabelText}>Super Like</Text>
-      </View>
-    );
-  };
+
+  const topCardRef = useRef<CardItemHandle>();
+
+  const stronglyAgreeRef = useRef<View>();
+  const agreeRef = useRef<View>();
+  const disagreeRef = useRef<View>();
+  const stronglyDisagreeRef = useRef<View>();
+  const [optionsX, setOptionsX] = useState(0);
+  const [stronglyAgreeTop, setStronglyAgreeTop] = useState(0);
+  const [agreeTop, setAgreeTop] = useState(0);
+  const [disagreeTop, setDisagreeTop] = useState(0);
+  const [stronglyDisagreeTop, setStronglyDisagreeTop] = useState(0);
+  const [stronglyDisagreeBottom, setStronglyDisagreeBottom] = useState(0);
 
   return (
     <View style={styles.container}>
       <View style={styles.optionContainer}>
-        <View style={styles.optionStronglyAgree}></View>
-        <View style={styles.optionAgree}></View>
-        <View style={styles.optionDisagree}></View>
-        <View style={styles.optionStronglyDisagree}></View>
+        <View style={styles.optionStronglyAgree} ref={stronglyAgreeRef} onLayout={() => {
+          stronglyAgreeRef.current.measure((_fx, _fy, _width, _height, px, py) => {
+            setOptionsX(px);
+            setStronglyAgreeTop(py);
+          })
+        }}></View>
+        <View style={styles.optionAgree} ref={agreeRef} onLayout={() => {
+          agreeRef.current.measure((_fx, _fy, _width, _height, _px, py) => {
+            setAgreeTop(py);
+          })
+        }}></View>
+        <View style={styles.optionDisagree} ref={disagreeRef} onLayout={() => {
+          disagreeRef.current.measure((_fx, _fy, _width, _height, _px, py) => {
+            setDisagreeTop(py);
+          })
+        }}></View>
+        <View style={styles.optionStronglyDisagree} ref={stronglyDisagreeRef} onLayout={() => {
+          stronglyDisagreeRef.current.measure((_fx, _fy, _width, height, _px, py) => {
+            setStronglyDisagreeTop(py);
+            setStronglyDisagreeBottom(py + height);
+          })
+        }}></View>
       </View>
+
+      <View style={styles.spacer} />
 
       <GestureHandlerRootView style={styles.cardWrapper}>
         {data.map((item, index) => {
@@ -76,23 +169,34 @@ export default function App() {
               key={index}
             >
               <TinderCard
-                cardWidth={280}
-                cardHeight={400}
-                OverlayLabelRight={OverlayRight}
-                OverlayLabelLeft={OverlayLeft}
-                OverlayLabelTop={OverlayTop}
+                ref={topCardRef}
+                cardWidth={normalize(220)}
+                cardHeight={normalize(300)}
+                optionsX={optionsX}
+                stronglyAgreeTop={stronglyAgreeTop}
+                agreeTop={agreeTop}
+                disagreeTop={disagreeTop}
+                stronglyDisagreeTop={stronglyDisagreeTop}
+                stronglyDisagreeBottom={stronglyDisagreeBottom}
+                OverlayLabelStronglyAgree={OverlayStronglyAgree}
+                OverlayLabelAgree={OverlayAgree}
+                OverlayLabelDisagree={OverlayDisagree}
+                OverlayLabelStronglyDisagree={OverlayStronglyDisagree}
                 cardStyle={styles.card}
-                onSwipedRight={() => {
-                  Alert.alert('Swiped right');
+                onSwipedStronglyAgree={() => {
+                  Alert.alert('Swiped strongly agree');
                 }}
-                onSwipedTop={() => {
-                  Alert.alert('Swiped Top');
+                onSwipedAgree={() => {
+                  Alert.alert('Swiped sagree');
                 }}
-                onSwipedLeft={() => {
-                  Alert.alert('Swiped left');
+                onSwipedDisagree={() => {
+                  Alert.alert('Swiped disagree');
+                }}
+                onSwipedStronglyDisagree={() => {
+                  Alert.alert('Swiped strongly disagree');
                 }}
               >
-                <Text style={styles.cardProgressLabel}>Pregunta {index} de {data.length}</Text>
+                <Text style={styles.cardProgressLabel}>Pregunta {data.length - index} de {data.length}</Text>
                 <Text style={styles.cardQuestion}>{item.question}</Text>
               </TinderCard>
               <StatusBar style="auto" />
@@ -110,18 +214,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     backgroundColor: '#F0E9EB',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   optionContainer: {
     height: '70%',
-    width: 40,
-    marginRight: 20,
+    width: normalize(30),
+    marginRight: normalize(20),
   },
   optionStronglyAgree: {
     backgroundColor: '#306F63',
     flexGrow: 1,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
+    borderTopLeftRadius: normalize(10),
+    borderTopRightRadius: normalize(10)
   },
   optionAgree: {
     backgroundColor: '#ADD4C2',
@@ -134,13 +238,16 @@ const styles = StyleSheet.create({
   optionStronglyDisagree: {
     backgroundColor: '#FE4102',
     flexGrow: 1,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10
+    borderBottomLeftRadius: normalize(10),
+    borderBottomRightRadius: normalize(10)
+  },
+  spacer: {
+    flex: 1
   },
   cardWrapper: {
-    flex: 1,
-    margin: 20,
-    height: 400
+    margin: normalize(20),
+    height: normalize(300),
+    width: normalize(220)
   },
   cardContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -148,29 +255,28 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   card: {
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: normalize(20),
+    padding: normalize(20),
     backgroundColor: 'white',
-    flex: 1,
     flexDirection: 'column',
     shadowOffset: { width: 0, height: 0 },
     shadowColor: 'black',
     shadowOpacity: 0.15,
-    shadowRadius: 15,
+    shadowRadius: normalize(15),
     elevation: 3,
   },
   cardProgressLabel: {
     color: '#D86775',
-    fontSize: 15
+    fontSize: normalize(12)
   },
   cardQuestion: {
-    fontSize: 20,
+    fontSize: normalize(18),
     marginTop: 20
   },
   overlayLabelContainer: {
     width: '100%',
     height: '100%',
-    borderRadius: 20,
+    borderRadius: normalize(20),
     justifyContent: 'center',
     alignItems: 'center',
   },
