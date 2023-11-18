@@ -5,7 +5,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import TinderCard, { CardItemHandle } from '../components/TinderCard';
 
 import normalize from '../util/normalizeFontSize';
-import { ItemData, data } from '../util/questions'
+import { AnswerStatement, ItemData, data } from '../util/questions'
+import { useAppDispatch } from '../state/hooks';
+import { addAnswer } from '../state/answerSlice';
 
 const OverlayStronglyAgree = () => {
     return (
@@ -69,6 +71,8 @@ const OverlayStronglyDisagree = () => {
 
 
 export default function SwipeScreen({ navigation }) {
+    const dispatch = useAppDispatch();
+
     const topCardRef = useRef<CardItemHandle>();
 
     const stronglyAgreeRef = useRef<View>();
@@ -104,19 +108,32 @@ export default function SwipeScreen({ navigation }) {
                     OverlayLabelStronglyDisagree={OverlayStronglyDisagree}
                     cardStyle={styles.card}
                     onSwipedStronglyAgree={() => {
-                        //Alert.alert('Swiped strongly agree');
+                        console.log('strongly agree')
+                        dispatch(addAnswer({
+                            category: item.category,
+                            answer: AnswerStatement.StronglyAgree
+                        }))
                     }}
                     onSwipedAgree={() => {
-                        //Alert.alert('Swiped sagree');
-                        //setCurrentIndex(currIndex => currIndex + 1);
+                        console.log('agree')
+                        dispatch(addAnswer({
+                            category: item.category,
+                            answer: AnswerStatement.Agree
+                        }))
                     }}
                     onSwipedDisagree={() => {
-                        //Alert.alert('Swiped disagree');
-                        //setCurrentIndex(currIndex => currIndex + 1);
+                        console.log('disagree')
+                        dispatch(addAnswer({
+                            category: item.category,
+                            answer: AnswerStatement.Disagree
+                        }))
                     }}
                     onSwipedStronglyDisagree={() => {
-                        //Alert.alert('Swiped strongly disagree');
-                        //setCurrentIndex(currIndex => currIndex + 1);
+                        console.log('strongly disagree')
+                        dispatch(addAnswer({
+                            category: item.category,
+                            answer: AnswerStatement.StronglyDisagree
+                        }))
                     }}
                 >
                     <Text style={styles.cardProgressLabel}>Pregunta {data.length - index} de {data.length}</Text>

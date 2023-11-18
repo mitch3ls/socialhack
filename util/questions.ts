@@ -1,5 +1,3 @@
-
-
 export enum EcoAnxietyType {
     GUILT,
     ANGER,
