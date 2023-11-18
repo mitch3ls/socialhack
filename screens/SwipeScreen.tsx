@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import TinderCard, { CardItemHandle } from '../components/TinderCard';
@@ -72,6 +72,11 @@ const OverlayStronglyDisagree = () => {
 
 export default function SwipeScreen({ navigation }) {
     const dispatch = useAppDispatch();
+    const randomizedQuestions = useMemo(() => {
+        const randomizedQuestions = data;
+        randomizedQuestions.sort(() => 0.5 - Math.random());
+        return randomizedQuestions;
+    }, [data]);
 
     const topCardRef = useRef<CardItemHandle>();
 
@@ -87,6 +92,7 @@ export default function SwipeScreen({ navigation }) {
     const [stronglyDisagreeBottom, setStronglyDisagreeBottom] = useState(0);
 
     function ClimatchTinderCard({ index, item }: { index: number, item: ItemData }) {
+
         return (
             <View
                 style={styles.cardContainer}
@@ -189,7 +195,7 @@ export default function SwipeScreen({ navigation }) {
                         />
                     </View>
                 </View>
-                {data.map((item, index) =>
+                {randomizedQuestions.map((item, index) =>
                     <ClimatchTinderCard key={index} index={index} item={item} />
                 )}
             </GestureHandlerRootView>
