@@ -5,49 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import TinderCard, { CardItemHandle } from './components/TinderCard';
 
 import normalize from './util/normalizeFontSize';
-
-type ItemData = {
-  question: string;
-}
-
-export const data: ItemData[] = [
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }, {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }, {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }, {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }, {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }, {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }, {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }
-];
+import { ItemData, data } from './util/questions'
 
 const OverlayStronglyAgree = () => {
   return (
