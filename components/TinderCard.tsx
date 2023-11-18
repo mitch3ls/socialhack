@@ -3,6 +3,7 @@ import React, {
     useImperativeHandle,
     useCallback,
     PropsWithRef,
+    PropsWithChildren,
   } from 'react';
   import Animated, {
     useSharedValue,
@@ -19,7 +20,91 @@ import React, {
     PanGestureHandler,
     PanGestureHandlerGestureEvent,
   } from 'react-native-gesture-handler';
-  import { CardItemHandle, TinderCardOptions } from 'rn-tinder-card';
+
+  export type CardItemHandle = {
+    swipeBack: () => void;
+    swipeLeft: () => void;
+    swipeRight: () => void;
+    swipeTop: () => void;
+    swipeBottom: () => void;
+  }
+
+  export type TinderCardOptions = PropsWithChildren<{
+    /*
+    The width of the card.
+    */
+    cardWidth?: number;
+  
+    /*
+    The width of the card.
+    */
+    cardHeight?: number;
+  
+    /*
+    The x coordinate range for card translation.
+    */
+    translateXRange?: number[];
+  
+    /*
+    The y coordinate range for card translation.
+    */
+    translateYRange?: number[];
+  
+    /*
+    The input and output ranges for card rotation.
+    */
+    inputRotationRange?: number[];
+    outputRotationRange?: number[];
+  
+    /*
+    The input and output ranges for swipe direction overlay label opacity.
+    */
+  
+    inputOverlayLabelRightOpacityRange?: number[];
+    outputOverlayLabelRightOpacityRange?: number[];
+  
+    inputOverlayLabelLeftOpacityRange?: number[];
+    outputOverlayLabelLeftOpacityRange?: number[];
+  
+    inputOverlayLabelTopOpacityRange?: number[];
+    outputOverlayLabelTopOpacityRange?: number[];
+  
+    inputOverlayLabelBottomOpacityRange?: number[];
+    outputOverlayLabelBottomOpacityRange?: number[];
+  
+    /*
+    Disable right, left, top and bottom swipes.
+    */
+    disableRightSwipe?: boolean;
+    disableLeftSwipe?: boolean;
+    disableTopSwipe?: boolean;
+    disableBottomSwipe?: boolean;
+  
+    /*
+    The style of the card.
+    */
+    cardStyle?: StyleProp<ViewStyle>;
+    /*
+    Callbacks for swipe events.
+    */
+    onSwipedRight?: () => void;
+    onSwipedLeft?: () => void;
+    onSwipedTop?: () => void;
+    onSwipedBottom?: () => void;
+  
+    /*
+    The scale value for card animation.
+    */
+    scaleValue?: number;
+  
+    /*
+    Swipe direction overlay label components.
+    */
+    OverlayLabelRight?: () => JSX.Element;
+    OverlayLabelLeft?: () => JSX.Element;
+    OverlayLabelTop?: () => JSX.Element;
+    OverlayLabelBottom?: () => JSX.Element;
+  }>;
   
   import {
     resetPosition,
@@ -30,6 +115,7 @@ import React, {
     userConfig,
   } from './TinderCard/utils';
   import OverlayLabel from './TinderCard/OverlayLabel';
+import { StyleProp, ViewStyle } from 'react-native';
   
   const CardItem = forwardRef<CardItemHandle, PropsWithRef<TinderCardOptions>>(
     (
@@ -68,7 +154,6 @@ import React, {
     ) => {
       const translateX = useSharedValue(0);
       const translateY = useSharedValue(0);
-      const tan = useSharedValue(0);
       const scale = useSharedValue(1);
   
       const gestureHandler = useAnimatedGestureHandler<
@@ -90,7 +175,6 @@ import React, {
         onActive: ({ translationX, translationY }, ctx) => {
           translateX.value = translationX + ctx.startX;
           translateY.value = translationY + ctx.startY;
-          tan.value = Math.atan2(translateY.value, translateX.value);
         },
         onEnd: ({ velocityX, velocityY, translationX, translationY }) => {
           const positiveX = Math.abs(translationX);
@@ -271,7 +355,6 @@ import React, {
                 outputRange={outputOverlayLabelLeftOpacityRange}
                 Component={OverlayLabelLeft}
                 opacityValue={translateX}
-                value={tan}
               />
             )}
             {OverlayLabelRight && (
@@ -280,7 +363,6 @@ import React, {
                 outputRange={outputOverlayLabelRightOpacityRange}
                 Component={OverlayLabelRight}
                 opacityValue={translateX}
-                value={tan}
               />
             )}
             {OverlayLabelTop && (
@@ -289,7 +371,6 @@ import React, {
                 outputRange={outputOverlayLabelTopOpacityRange}
                 Component={OverlayLabelTop}
                 opacityValue={translateY}
-                value={tan}
               />
             )}
             {OverlayLabelBottom && (
@@ -298,7 +379,6 @@ import React, {
                 outputRange={outputOverlayLabelBottomOpacityRange}
                 Component={OverlayLabelBottom}
                 opacityValue={translateY}
-                value={tan}
               />
             )}
   

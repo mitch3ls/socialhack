@@ -9,17 +9,15 @@ import Animated, {
 type Props = PropsWithChildren<{
   inputRange?: number[];
   outputRange?: number[];
-  Component: ({ value }: {value: Animated.SharedValue<number>}) => JSX.Element;
+  Component: () => JSX.Element;
   opacityValue: Animated.SharedValue<number>;
-  value: Animated.SharedValue<number>;
 }>;
 
 const OverlayLabel = ({
   inputRange,
   outputRange,
   Component,
-  opacityValue,
-  value
+  opacityValue
 }: Props) => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -38,7 +36,7 @@ const OverlayLabel = ({
       style={[StyleSheet.absoluteFillObject, animatedStyle]}
       pointerEvents="none"
     >
-      <Component value={value} />
+      <Component />
     </Animated.View>
   );
 };
