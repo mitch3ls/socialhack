@@ -14,7 +14,8 @@ export enum AnswerStatement {
 
 export type ItemData = {
     question: string;
-    category: EcoAnxietyType
+    category: EcoAnxietyType;
+    imageURI?: string;
 }
 
 export type AnswerData = {

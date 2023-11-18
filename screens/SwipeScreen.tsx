@@ -1,13 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { useMemo, useRef, useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, View, Image } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import TinderCard, { CardItemHandle } from '../components/TinderCard';
 
-import normalize from '../util/normalizeFontSize';
 import { AnswerStatement, ItemData, data } from '../util/questions'
-import { useAppDispatch } from '../state/hooks';
+import { useAnswers, useAppDispatch } from '../state/hooks';
 import { addAnswer } from '../state/answerSlice';
+import { normalizeHeight, normalizeWidth } from '../util/normalize';
 
 const OverlayStronglyAgree = () => {
     return (
@@ -19,7 +19,7 @@ const OverlayStronglyAgree = () => {
                 },
             ]}
         >
-            <Text style={styles.overlayLabelText}>Strongly Agree</Text>
+            <Text style={styles.overlayLabelText}>totalmente si</Text>
         </View>
     );
 };
@@ -34,7 +34,7 @@ const OverlayAgree = () => {
                 },
             ]}
         >
-            <Text style={styles.overlayLabelText}>Agree</Text>
+            <Text style={styles.overlayLabelText}>de acuerdo</Text>
         </View>
     );
 };
@@ -49,7 +49,7 @@ const OverlayDisagree = () => {
                 },
             ]}
         >
-            <Text style={styles.overlayLabelText}>Disagree</Text>
+            <Text style={styles.overlayLabelText}>en desacuerdo</Text>
         </View>
     );
 };
@@ -60,14 +60,28 @@ const OverlayStronglyDisagree = () => {
             style={[
                 styles.overlayLabelContainer,
                 {
-                    backgroundColor: '#FE4102',
+                    backgroundColor: '#81002A',
                 },
             ]}
         >
-            <Text style={styles.overlayLabelText}>Stronly Disagree</Text>
+            <Text style={styles.overlayLabelText}>totalmente no</Text>
         </View>
     );
 };
+
+function ProgressBar() {
+    const answers = useAnswers();
+
+    const progress = answers.length * 100 / data.length;
+
+    return (
+        <View style={styles.progressBar}>
+            <View style={[styles.progressMarker, {
+                width: `${progress}%`
+            }]}></View>
+        </View>
+    )
+}
 
 
 export default function SwipeScreen({ navigation }) {
@@ -100,8 +114,8 @@ export default function SwipeScreen({ navigation }) {
             >
                 <TinderCard
                     ref={topCardRef}
-                    cardWidth={normalize(220)}
-                    cardHeight={normalize(300)}
+                    cardWidth={normalizeWidth(257)}
+                    cardHeight={normalizeHeight(511)}
                     optionsX={optionsX}
                     stronglyAgreeTop={stronglyAgreeTop}
                     agreeTop={agreeTop}
@@ -138,8 +152,11 @@ export default function SwipeScreen({ navigation }) {
                         }))
                     }}
                 >
-                    <Text style={styles.cardProgressLabel}>Pregunta {data.length - index} de {data.length}</Text>
-                    <Text style={styles.cardQuestion}>{item.question}</Text>
+                    {item.imageURI && <Image source={{ uri: item.imageURI }} style={styles.cardImage} />}
+                    <View style={styles.cardContent}>
+                        <Text style={styles.cardQuestion}>{item.question}</Text>
+                    </View>
+
                 </TinderCard>
             </View>
         )
@@ -147,55 +164,73 @@ export default function SwipeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.optionContainer}>
-                <View style={styles.optionStronglyAgree} ref={stronglyAgreeRef} onLayout={() => {
-                    stronglyAgreeRef.current.measure((_fx, _fy, _width, _height, px, py) => {
-                        setOptionsX(px);
-                        setStronglyAgreeTop(py);
-                    })
-                }}></View>
-                <View style={styles.optionAgree} ref={agreeRef} onLayout={() => {
-                    agreeRef.current.measure((_fx, _fy, _width, _height, _px, py) => {
-                        setAgreeTop(py);
-                    })
-                }}></View>
-                <View style={styles.optionDisagree} ref={disagreeRef} onLayout={() => {
-                    disagreeRef.current.measure((_fx, _fy, _width, _height, _px, py) => {
-                        setDisagreeTop(py);
-                    })
-                }}></View>
-                <View style={styles.optionStronglyDisagree} ref={stronglyDisagreeRef} onLayout={() => {
-                    stronglyDisagreeRef.current.measure((_fx, _fy, _width, height, _px, py) => {
-                        setStronglyDisagreeTop(py);
-                        setStronglyDisagreeBottom(py + height);
-                    })
-                }}></View>
+            <View style={styles.logoContainer}>
+                <Image source={require('../assets/logo.png')} style={styles.logoImage} />
             </View>
-
-            <View style={styles.spacer} />
-
-            <GestureHandlerRootView style={styles.cardWrapper}>
-                <View
-                    style={styles.cardContainer}
-                    pointerEvents="box-none"
-                >
-                    <View style={[styles.card, {
-                        width: normalize(220),
-                        height: normalize(300),
-                        backgroundColor: '#D86775'
-                    }]}>
-                        <Text style={[styles.cardQuestion, { color: 'white' }]}>Done!</Text>
-                        <Button
-                            title="Go to Results"
-                            onPress={() => navigation.navigate('Results')}
-                        />
+            <View style={styles.mainContainer}>
+                <View style={styles.optionContainer}>
+                    <View style={[styles.option, styles.optionStronglyAgree]} ref={stronglyAgreeRef} onLayout={() => {
+                        stronglyAgreeRef.current.measure((_fx, _fy, _width, _height, px, py) => {
+                            setOptionsX(px);
+                            setStronglyAgreeTop(py);
+                        })
+                    }}>
+                        <Text style={styles.optionLabel}>muy de acuerdo</Text>
+                    </View>
+                    <View style={[styles.option, styles.optionAgree]} ref={agreeRef} onLayout={() => {
+                        agreeRef.current.measure((_fx, _fy, _width, _height, _px, py) => {
+                            setAgreeTop(py);
+                        })
+                    }}>
+                        <Text style={styles.optionLabel}>más bien sí</Text>
+                    </View>
+                    <View style={[styles.option, styles.optionDisagree]} ref={disagreeRef} onLayout={() => {
+                        disagreeRef.current.measure((_fx, _fy, _width, _height, _px, py) => {
+                            setDisagreeTop(py);
+                        })
+                    }}>
+                        <Text style={styles.optionLabel}>más bien no</Text>
+                    </View>
+                    <View style={[styles.option, styles.optionStronglyDisagree]} ref={stronglyDisagreeRef} onLayout={() => {
+                        stronglyDisagreeRef.current.measure((_fx, _fy, _width, height, _px, py) => {
+                            setStronglyDisagreeTop(py);
+                            setStronglyDisagreeBottom(py + height);
+                        })
+                    }}>
+                        <Text style={styles.optionLabel}>muy en desacuerdo</Text>
                     </View>
                 </View>
-                {randomizedQuestions.map((item, index) =>
-                    <ClimatchTinderCard key={index} index={index} item={item} />
-                )}
-            </GestureHandlerRootView>
 
+                <View style={styles.leftColumnContainer}>
+                    <Text style={styles.title}>Que piensas de esta blabla</Text>
+                    <GestureHandlerRootView style={styles.cardWrapper}>
+                        <View
+                            style={styles.cardContainer}
+                            pointerEvents="box-none"
+                        >
+                            <View style={[styles.card, {
+                                width: normalizeWidth(257),
+                                height: normalizeHeight(511),
+                                backgroundColor: '#D86775'
+                            }]}>
+                                <Text style={[styles.cardQuestion, { color: 'white' }]}>Done!</Text>
+                                <Button
+                                    title="Go to Results"
+                                    onPress={() => navigation.navigate('Results')}
+                                />
+                            </View>
+                        </View>
+                        {randomizedQuestions.map((item, index) =>
+                            <ClimatchTinderCard key={index} index={index} item={item} />
+                        )}
+                    </GestureHandlerRootView>
+                    <View style={styles.controls}>
+                        {/* TODO make work (what does it even do) */}
+                        <Image source={require('../assets/icons/go-back.png')} style={styles.revertIcon} />
+                        <ProgressBar />
+                    </View>
+                </View>
+            </View>
             <StatusBar style="auto" />
         </SafeAreaView>
     );
@@ -204,43 +239,76 @@ export default function SwipeScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'row-reverse',
+        flexDirection: 'column',
         backgroundColor: '#F0E9EB',
+    },
+    logoContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    logoImage: {
+        width: normalizeHeight(32),
+        height: normalizeHeight(32)
+    },
+    mainContainer: {
+        height: normalizeHeight(660),
+        flexDirection: 'row-reverse',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
+        marginLeft: normalizeWidth(30),
+        marginRight: normalizeWidth(30),
+        marginBottom: normalizeWidth(30)
     },
     optionContainer: {
-        height: '70%',
-        width: normalize(30),
-        marginRight: normalize(20),
+        height: normalizeHeight(660),
+        width: normalizeWidth(40),
+    },
+    optionLabel: {
+        color: 'white',
+        fontSize: normalizeHeight(15),
+        textAlign: 'center',
+        width: normalizeHeight(165),
+        height: normalizeWidth(16),
+        transform: [{
+            rotate: '90deg'
+        }]
+    },
+    option: {
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     optionStronglyAgree: {
         backgroundColor: '#306F63',
-        flexGrow: 1,
-        borderTopLeftRadius: normalize(10),
-        borderTopRightRadius: normalize(10)
+        borderTopLeftRadius: normalizeWidth(12),
+        borderTopRightRadius: normalizeWidth(12),
+
     },
     optionAgree: {
         backgroundColor: '#ADD4C2',
-        flexGrow: 1
     },
     optionDisagree: {
         backgroundColor: '#FFB4D2',
-        flexGrow: 1
     },
     optionStronglyDisagree: {
-        backgroundColor: '#FE4102',
+        backgroundColor: '#81002A',
         flexGrow: 1,
-        borderBottomLeftRadius: normalize(10),
-        borderBottomRightRadius: normalize(10)
+        borderBottomLeftRadius: normalizeWidth(10),
+        borderBottomRightRadius: normalizeWidth(10)
     },
-    spacer: {
-        flex: 1
+    leftColumnContainer: {
+        width: normalizeWidth(257),
+        height: normalizeHeight(660)
+    },
+    title: {
+        fontSize: normalizeHeight(28),
+        flex: 1,
+        fontFamily: 'Montserrat-Black'
     },
     cardWrapper: {
-        margin: normalize(20),
-        height: normalize(300),
-        width: normalize(220)
+        height: normalizeHeight(511),
+        width: normalizeWidth(257)
     },
     cardContainer: {
         ...StyleSheet.absoluteFillObject,
@@ -248,16 +316,31 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     card: {
-        borderRadius: normalize(20),
-        padding: normalize(20),
-        backgroundColor: 'white',
-        flexDirection: 'column'
+        borderRadius: normalizeWidth(20),
+        backgroundColor: '#ADD4C2',
+        position: 'relative',
+    },
+    cardContent: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        borderRadius: normalizeWidth(20),
+        padding: normalizeWidth(20),
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        backgroundColor: 'transparent'
+    },
+    cardImage: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        borderRadius: normalizeWidth(20)
     },
     topCardShadow: {
         shadowOffset: { width: 0, height: 0 },
         shadowColor: 'black',
         shadowOpacity: 0.15,
-        shadowRadius: normalize(15),
+        shadowRadius: normalizeWidth(15),
         elevation: 3,
     },
     nextCardShadow: {
@@ -269,18 +352,43 @@ const styles = StyleSheet.create({
     },
     cardProgressLabel: {
         color: '#D86775',
-        fontSize: normalize(12)
+        fontSize: normalizeWidth(12)
     },
     cardQuestion: {
-        fontSize: normalize(18),
-        marginTop: 20
+        fontSize: normalizeWidth(18),
+        marginTop: 20,
+        fontFamily: 'Inter-Regular',
+        color: 'white'
     },
     overlayLabelContainer: {
         width: '100%',
         height: '100%',
-        borderRadius: normalize(20),
+        borderRadius: normalizeWidth(20),
         justifyContent: 'center',
         alignItems: 'center',
     },
     overlayLabelText: { color: 'white', fontSize: 32, fontWeight: 'bold' },
+    controls: {
+        height: normalizeHeight(64),
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    revertIcon: {
+        width: normalizeWidth(16),
+        height: normalizeWidth(16),
+        marginRight: normalizeWidth(16)
+    },
+    progressBar: {
+        flex: 1,
+        height: normalizeWidth(8),
+        borderRadius: normalizeWidth(4),
+        backgroundColor: '#ADD4C2',
+        position: 'relative'
+    },
+    progressMarker: {
+        position: 'absolute',
+        borderRadius: normalizeWidth(4),
+        height: normalizeWidth(8),
+        backgroundColor: '#16352F',
+    }
 });
