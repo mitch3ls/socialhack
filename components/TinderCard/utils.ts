@@ -23,11 +23,11 @@ function resetPosition(
 
 const snapPoint = (
   value: number,
-  velocity: number,
+  _velocity: number,
   points: ReadonlyArray<number>
 ): number => {
   'worklet';
-  const point = value + 0.2 * velocity;
+  const point = value
   const deltas = points.map((p) => Math.abs(point - p));
   const minDelta = Math.min.apply(null, deltas);
   return Number(points.filter((p) => Math.abs(point - p) === minDelta)[0]);
