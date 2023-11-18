@@ -1,12 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import TinderCard, { CardItemHandle } from './components/TinderCard';
 
 import normalize from './util/normalizeFontSize';
 
-const data = [
+type ItemData = {
+  question: string;
+}
+
+export const data: ItemData[] = [
   {
     question: '¿Ha dormido bien? ¿Ha dormido bien?'
   },
@@ -42,17 +46,7 @@ const data = [
   },
   {
     question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }, {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  }, {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
-  {
-    question: '¿Ha dormido bien? ¿Ha dormido bien?'
-  },
+  }
 ];
 
 const OverlayStronglyAgree = () => {
@@ -118,6 +112,7 @@ const OverlayStronglyDisagree = () => {
 
 export default function App() {
 
+  const [currentIndex, setCurrentIndex] = useState(0);
   const topCardRef = useRef<CardItemHandle>();
 
   const stronglyAgreeRef = useRef<View>();
@@ -130,6 +125,53 @@ export default function App() {
   const [disagreeTop, setDisagreeTop] = useState(0);
   const [stronglyDisagreeTop, setStronglyDisagreeTop] = useState(0);
   const [stronglyDisagreeBottom, setStronglyDisagreeBottom] = useState(0);
+
+  function ClimatchTinderCard({ index, item }: { index: number, item: ItemData }) {
+    return (
+      <View
+        style={styles.cardContainer}
+        pointerEvents="box-none"
+      >
+        <TinderCard
+          ref={topCardRef}
+          cardWidth={normalize(220)}
+          cardHeight={normalize(300)}
+          optionsX={optionsX}
+          stronglyAgreeTop={stronglyAgreeTop}
+          agreeTop={agreeTop}
+          disagreeTop={disagreeTop}
+          stronglyDisagreeTop={stronglyDisagreeTop}
+          stronglyDisagreeBottom={stronglyDisagreeBottom}
+          OverlayLabelStronglyAgree={OverlayStronglyAgree}
+          OverlayLabelAgree={OverlayAgree}
+          OverlayLabelDisagree={OverlayDisagree}
+          OverlayLabelStronglyDisagree={OverlayStronglyDisagree}
+          cardStyle={[styles.card]}
+          onSwipedStronglyAgree={() => {
+            //Alert.alert('Swiped strongly agree');
+            setCurrentIndex(currIndex => currIndex + 1);
+          }}
+          onSwipedAgree={() => {
+            //Alert.alert('Swiped sagree');
+            //setCurrentIndex(currIndex => currIndex + 1);
+          }}
+          onSwipedDisagree={() => {
+            //Alert.alert('Swiped disagree');
+            //setCurrentIndex(currIndex => currIndex + 1);
+          }}
+          onSwipedStronglyDisagree={() => {
+            //Alert.alert('Swiped strongly disagree');
+            //setCurrentIndex(currIndex => currIndex + 1);
+          }}
+        >
+          <Text style={styles.cardProgressLabel}>Pregunta {data.length - index} de {data.length}</Text>
+          <Text style={styles.cardQuestion}>{item.question}</Text>
+        </TinderCard>
+      </View>
+    )
+  }
+
+  console.log(currentIndex, data.length)
 
   return (
     <View style={styles.container}>
@@ -161,49 +203,12 @@ export default function App() {
       <View style={styles.spacer} />
 
       <GestureHandlerRootView style={styles.cardWrapper}>
-        {data.map((item, index) => {
-          return (
-            <View
-              style={styles.cardContainer}
-              pointerEvents="box-none"
-              key={index}
-            >
-              <TinderCard
-                ref={topCardRef}
-                cardWidth={normalize(220)}
-                cardHeight={normalize(300)}
-                optionsX={optionsX}
-                stronglyAgreeTop={stronglyAgreeTop}
-                agreeTop={agreeTop}
-                disagreeTop={disagreeTop}
-                stronglyDisagreeTop={stronglyDisagreeTop}
-                stronglyDisagreeBottom={stronglyDisagreeBottom}
-                OverlayLabelStronglyAgree={OverlayStronglyAgree}
-                OverlayLabelAgree={OverlayAgree}
-                OverlayLabelDisagree={OverlayDisagree}
-                OverlayLabelStronglyDisagree={OverlayStronglyDisagree}
-                cardStyle={styles.card}
-                onSwipedStronglyAgree={() => {
-                  Alert.alert('Swiped strongly agree');
-                }}
-                onSwipedAgree={() => {
-                  Alert.alert('Swiped sagree');
-                }}
-                onSwipedDisagree={() => {
-                  Alert.alert('Swiped disagree');
-                }}
-                onSwipedStronglyDisagree={() => {
-                  Alert.alert('Swiped strongly disagree');
-                }}
-              >
-                <Text style={styles.cardProgressLabel}>Pregunta {data.length - index} de {data.length}</Text>
-                <Text style={styles.cardQuestion}>{item.question}</Text>
-              </TinderCard>
-              <StatusBar style="auto" />
-            </View>
-          );
-        })}
+        {data.map((item, index) =>
+          <ClimatchTinderCard key={index} index={index} item={item} />
+        )}
       </GestureHandlerRootView>
+
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -258,12 +263,21 @@ const styles = StyleSheet.create({
     borderRadius: normalize(20),
     padding: normalize(20),
     backgroundColor: 'white',
-    flexDirection: 'column',
+    flexDirection: 'column'
+  },
+  topCardShadow: {
     shadowOffset: { width: 0, height: 0 },
     shadowColor: 'black',
     shadowOpacity: 0.15,
     shadowRadius: normalize(15),
     elevation: 3,
+  },
+  nextCardShadow: {
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: 'transparent',
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0
   },
   cardProgressLabel: {
     color: '#D86775',

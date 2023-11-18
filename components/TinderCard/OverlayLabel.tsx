@@ -20,10 +20,10 @@ type Props = PropsWithChildren<{
 }>;
 
 const OverlayLabel = ({
-  overShootFrom = 0.5,
+  overShootFrom = 0.05,
   angleFromValue,
   angleToValue,
-  overShootTo = 0.5,
+  overShootTo = 0.05,
   Component,
   distanceValue,
   angleValue

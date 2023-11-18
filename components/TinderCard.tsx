@@ -189,7 +189,7 @@ const CardItem = forwardRef<CardItemHandle, PropsWithRef<TinderCardOptions>>(
                 if (destX <= 0) {
                     resetPosition(translateX, translateY);
                 } else {
-                    const flyAwayX = windowWidth;
+                    const flyAwayX = 1.2 * windowWidth;
                     const flyAwayY = interpolate(flyAwayX,
                         [absoluteReferenceX.value, optionsX],
                         [absoluteReferenceY.value, destY]);
