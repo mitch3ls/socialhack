@@ -216,7 +216,7 @@ export default function SwipeScreen({ navigation }) {
                                 <Text style={[styles.cardQuestion, { color: 'white' }]}>Done!</Text>
                                 <Button
                                     title="Go to Results"
-                                    onPress={() => navigation.navigate('Results')}
+                                    onPress={() => navigation.navigate('Working')}
                                 />
                             </View>
                         </View>
