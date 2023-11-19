@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Button, SafeAreaView, StyleSheet, Text, View, Image } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import TinderCard, { CardItemHandle } from '../components/TinderCard';
@@ -105,6 +104,12 @@ export default function SwipeScreen({ navigation }) {
     const [stronglyDisagreeTop, setStronglyDisagreeTop] = useState(0);
     const [stronglyDisagreeBottom, setStronglyDisagreeBottom] = useState(0);
 
+    const onLastCardSwiped = useCallback(() => {
+        setTimeout(() => {
+            navigation.navigate('Working')
+        }, 500)
+    }, [])
+
     function ClimatchTinderCard({ index, item }: { index: number, item: ItemData }) {
 
         return (
@@ -128,24 +133,36 @@ export default function SwipeScreen({ navigation }) {
                     OverlayLabelStronglyDisagree={OverlayStronglyDisagree}
                     cardStyle={styles.card}
                     onSwipedStronglyAgree={() => {
+                        if (index == 0) {
+                            onLastCardSwiped()
+                        }
                         dispatch(addAnswer({
                             category: item.category,
                             answer: AnswerStatement.StronglyAgree
                         }))
                     }}
                     onSwipedAgree={() => {
+                        if (index == 0) {
+                            onLastCardSwiped()
+                        }
                         dispatch(addAnswer({
                             category: item.category,
                             answer: AnswerStatement.Agree
                         }))
                     }}
                     onSwipedDisagree={() => {
+                        if (index == 0) {
+                            onLastCardSwiped()
+                        }
                         dispatch(addAnswer({
                             category: item.category,
                             answer: AnswerStatement.Disagree
                         }))
                     }}
                     onSwipedStronglyDisagree={() => {
+                        if (index == 0) {
+                            onLastCardSwiped()
+                        }
                         dispatch(addAnswer({
                             category: item.category,
                             answer: AnswerStatement.StronglyDisagree
@@ -202,36 +219,19 @@ export default function SwipeScreen({ navigation }) {
                 </View>
 
                 <View style={styles.leftColumnContainer}>
-                    <Text style={styles.title}>Que piensas de esta blabla</Text>
+                    <Text style={styles.title}>Qué piensas?</Text>
                     <GestureHandlerRootView style={styles.cardWrapper}>
-                        <View
-                            style={styles.cardContainer}
-                            pointerEvents="box-none"
-                        >
-                            <View style={[styles.card, {
-                                width: normalizeWidth(257),
-                                height: normalizeHeight(511),
-                                backgroundColor: '#D86775'
-                            }]}>
-                                <Text style={[styles.cardQuestion, { color: 'white' }]}>Done!</Text>
-                                <Button
-                                    title="Go to Results"
-                                    onPress={() => navigation.navigate('Working')}
-                                />
-                            </View>
-                        </View>
                         {randomizedQuestions.map((item, index) =>
                             <ClimatchTinderCard key={index} index={index} item={item} />
                         )}
                     </GestureHandlerRootView>
                     <View style={styles.controls}>
-                        {/* TODO make work (what does it even do) */}
-                        <Image source={require('../assets/icons/go-back.png')} style={styles.revertIcon} />
+                        {/* TODO make work (what does it even do) 
+                        <Image source={require('../assets/icons/go-back.png')} style={styles.revertIcon} />*/}
                         <ProgressBar />
                     </View>
                 </View>
             </View>
-            <StatusBar style="auto" />
         </SafeAreaView>
     );
 }
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F0E9EB',
     },
     logoContainer: {
-        flex: 1,
+        height: normalizeHeight(100),
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -309,7 +309,8 @@ const styles = StyleSheet.create({
     },
     cardWrapper: {
         height: normalizeHeight(511),
-        width: normalizeWidth(257)
+        width: normalizeWidth(257),
+        zIndex: 1
     },
     cardContainer: {
         ...StyleSheet.absoluteFillObject,

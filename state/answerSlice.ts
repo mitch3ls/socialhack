@@ -22,10 +22,13 @@ export const answerSlice = createSlice({
         addAnswer: (state, action: PayloadAction<AnswerData>) => {
             state.answers.push(action.payload)
         },
+        clearAnswers: (state) => {
+            state.answers = []
+        }
     },
 })
 
-export const { addAnswer } = answerSlice.actions
+export const { addAnswer, clearAnswers } = answerSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectAnswers = (state: RootState) => state.answers.answers

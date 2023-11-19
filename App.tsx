@@ -8,6 +8,7 @@ import SwipeScreen from './screens/SwipeScreen';
 import ResultsScreen from './screens/ResultsScreen';
 import { useEffect } from 'react';
 import WorkingScreen from './screens/WorkingScreen';
+import ResourcesScreen from './screens/ResourcesScreen';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,12 +35,13 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Results" screenOptions={{
+        <Stack.Navigator initialRouteName="Swipe" screenOptions={{
           headerShown: false
         }}>
           <Stack.Screen name="Swipe" component={SwipeScreen} />
           <Stack.Screen name="Working" component={WorkingScreen} />
           <Stack.Screen name="Results" component={ResultsScreen} />
+          <Stack.Screen name="Resources" component={ResourcesScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

@@ -1,10 +1,21 @@
 import { StyleSheet, View, Text, SafeAreaView, Image } from 'react-native';
 import { normalizeHeight } from '../util/normalize';
 import { useEffect } from 'react';
+import { useAnswers, useAppDispatch } from '../state/hooks';
+import { calculateCategoryWeights } from '../util/questions';
+import { setResults } from '../state/resultSlice';
 
 const workingDuration = 2000;
 
 export default function WorkingScreen({ navigation }) {
+
+    const answers = useAnswers();
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const results = calculateCategoryWeights(answers);
+        dispatch(setResults(results));
+    }, [answers])
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -17,7 +28,7 @@ export default function WorkingScreen({ navigation }) {
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
                 <Image source={require('../assets/Egg.png')} style={styles.eggImage} />
-                <Text style={styles.infoText}>Calculating your results...</Text>
+                <Text style={styles.infoText}>Calculando tus resultados...</Text>
             </View>
         </SafeAreaView>
     );
